@@ -30,17 +30,6 @@
 
           <div class="row">
             <KInputRadios
-              v-model="user.role"
-              rules="required"
-              :label="$t('user.role')"
-              :options="[
-                { name: $t('role.super'), value: 'superuser' },
-                { name: $t('role.admin'), value: 'admin' },
-                { name: $t('role.editor'), value: 'editor' },
-                { name: $t('role.user'), value: 'user' },
-              ]"
-              name="user[role]" />
-            <KInputRadios
               v-model="user.language"
               rules="required"
               :options="[

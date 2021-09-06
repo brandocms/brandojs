@@ -71,7 +71,6 @@
 import { gsap } from 'gsap'
 
 export default {
-
   inject: ['GLOBALS'],
   data () {
     return {

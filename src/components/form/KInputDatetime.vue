@@ -3,6 +3,7 @@
     :name="name"
     :label="label"
     :rules="rules"
+    :compact="compact"
     :help-text="helpText"
     :value="value">
     <div class="wrapper">
@@ -119,7 +120,13 @@ export default {
 
     label: {
       type: String,
-      required: true
+      required: false,
+      default: null
+    },
+
+    compact: {
+      type: Boolean,
+      default: false
     },
 
     placeholder: {

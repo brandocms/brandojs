@@ -9,6 +9,7 @@ export default function validateImageParams (params, imageParams) {
       continue
     }
     if (!(params[imageParams[i]] instanceof File) && params[imageParams[i]] !== null) {
+      console.log(params[imageParams[i]])
       params[imageParams[i]] = stripParams(params[imageParams[i]], [
         '__typename',
         'base64',

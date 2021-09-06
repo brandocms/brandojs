@@ -36,7 +36,7 @@ export default {
 
 <style lang="postcss" scoped>
   .actions {
-    padding-bottom: 15px;
+    margin-bottom: 15px;
   }
 
   dl {

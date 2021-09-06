@@ -169,15 +169,19 @@ export default {
       this.html = this.providers[this.block.data.source].html
         .replace('{{protocol}}', window.location.protocol)
         .replace('{{remote_id}}', this.block.data.remote_id)
+    }
+  },
 
-      this.$nextTick(() => {
-        setTimeout(() => {
+  mounted () {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.$refs.preview) {
           const rect = this.$refs.preview.getBoundingClientRect()
           this.$set(this.block.data, 'width', Math.round(rect.width))
           this.$set(this.block.data, 'height', Math.round(rect.height))
-        }, 3500)
-      })
-    }
+        }
+      }, 3500)
+    })
   },
 
   updated () {

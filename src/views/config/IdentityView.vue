@@ -263,7 +263,7 @@ export default {
 
   methods: {
     async save () {
-      const params = this.$utils.stripParams(this.identity, ['__typename', 'id', 'languages', 'config'])
+      const params = this.$utils.stripParams(this.identity, ['__typename', 'id', 'languages', 'config', 'defaultLanguage'])
       this.$utils.validateImageParams(params, ['logo'])
 
       params.links.map(item => (delete item.__typename))

@@ -360,7 +360,7 @@ export default {
       this.availableModules = await this.fetchModules(this.modules)
     }
 
-    this.innerValue = this.addUIDs()
+    // this.innerValue = this.addUIDs()
 
     // validate each block!
     for (let idx = 0; idx < this.innerValue.length; idx++) {
@@ -414,6 +414,10 @@ export default {
 
     validateBlock (block) {
       const bpBlock = this.availableBlocks.find(b => b.component.toLowerCase() === block.type)
+      if (!Object.prototype.hasOwnProperty.call(block, 'uid')) {
+        this.$set(block, 'uid', this.createUID()) // or this.$utils.guid()?
+      }
+
       if (bpBlock) {
         switch (block.type) {
           case 'datatable':
@@ -1092,7 +1096,7 @@ export default {
     },
 
     deleteBlock (bl) {
-      const {uid, ref} = bl
+      const { uid, ref } = bl
       const block = this.innerValue.find(b => {
         if (b.type === 'columns') {
           // look through the columns' blocks and delete if found

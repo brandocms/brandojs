@@ -241,6 +241,10 @@ export default {
   },
 
   methods: {
+    createUID () {
+      return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase()
+    },
+
     helpBlock () {
       this.showHelp = true
     },
@@ -250,6 +254,7 @@ export default {
     },
 
     deleteBlock () {
+      console.log('deleteBlock', this.block)
       this.$alerts.alertConfirm('OBS!', this.$t('block.deleteConfirm'), data => {
         if (data) {
           this.$emit('delete', this.block)
@@ -262,7 +267,7 @@ export default {
     },
 
     showBlock () {
-      this.$delete('show', this.block)
+      this.$emit('show', this.block)
     },
 
     duplicateBlock () {

@@ -233,6 +233,7 @@ export default {
 
   data () {
     return {
+      firstPrefill: true,
       focal: null,
       loading: 0,
       preCheck: false,
@@ -298,7 +299,10 @@ export default {
       this.prefill = this.innerValue ? this.innerValue[this.previewKey] : null
       if (this.innerValue) {
         this.focal = this.innerValue.focal ? this.innerValue.focal : null
-        delete this.innerValue.focal
+        if (this.firstPrefill) {
+          delete this.innerValue.focal
+        }
+        this.firstPrefill = false
       } else {
         this.focal = { x: 50, y: 50 }
       }
@@ -403,10 +407,7 @@ export default {
     },
 
     setFocal (f) {
-      this.innerValue = {
-        ...this.innerValue,
-        focal: f
-      }
+      this.$set(this.innerValue, 'focal', f)
     }
   }
 }

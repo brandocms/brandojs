@@ -2,96 +2,96 @@
   <article v-if="user">
     <ContentHeader>
       <template #title>
-        {{ $t('user.title') }}
+        {{ $t("user.title") }}
       </template>
       <template #subtitle>
-        {{ $t('user.subtitle') }}
+        {{ $t("user.subtitle") }}
       </template>
     </ContentHeader>
-    <UserForm
-      :user="user"
-      :save="save" />
+    <UserForm :user="user" :save="save" />
   </article>
 </template>
 
 <script>
-
-import gql from 'graphql-tag'
-import UserForm from './UserForm'
-import GET_USER from '../../gql/users/USER_QUERY.graphql'
+import gql from "graphql-tag";
+import UserForm from "./UserForm";
+import GET_USER from "../../gql/users/USER_QUERY.graphql";
 
 export default {
   components: {
-    UserForm
+    UserForm,
   },
 
   props: {
     userId: {
       type: [String, Number],
-      required: true
-    }
+      required: true,
+    },
   },
 
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
 
   methods: {
-    async save (setLoader) {
-      setLoader(true)
+    async save(setLoader) {
+      setLoader(true);
 
-      const userParams = this.$utils.stripParams(this.user, ['__typename', 'passwordConfirm', 'id', 'active', 'lastLogin', 'deletedAt'])
-      this.$utils.validateImageParams(userParams, ['avatar'])
+      const userParams = this.$utils.stripParams(this.user, [
+        "__typename",
+        "passwordConfirm",
+        "id",
+        "active",
+        "lastLogin",
+        "deletedAt",
+      ]);
+      this.$utils.validateImageParams(userParams, ["avatar"]);
 
       if (userParams.config) {
-        delete userParams.config.__typename
+        delete userParams.config.__typename;
       }
 
       try {
         await this.$apollo.mutate({
           mutation: gql`
             mutation UpdateUser($userId: ID!, $userParams: UserParams) {
-              updateUser(
-                userId: $userId,
-                userParams: $userParams
-              ) {
+              updateUser(userId: $userId, userParams: $userParams) {
                 id
               }
             }
           `,
           variables: {
             userParams,
-            userId: this.userId
-          }
-        })
+            userId: this.userId,
+          },
+        });
 
-        setLoader(false)
-        this.$toast.success({ message: 'Bruker oppdatert' })
-        this.$router.push({ name: 'users' })
+        setLoader(false);
+        this.$toast.success({ message: "Bruker oppdatert" });
+        this.$router.push({ name: "users" });
       } catch (err) {
-        this.$utils.showError(err)
-        setLoader(false)
+        this.$utils.showError(err);
+        setLoader(false);
       }
-    }
+    },
   },
 
   apollo: {
     user: {
       query: GET_USER,
-      fetchPolicy: 'no-cache',
-      variables () {
+      fetchPolicy: "no-cache",
+      variables() {
         return {
-          matches: { id: this.userId }
-        }
+          matches: { id: this.userId },
+        };
       },
 
-      skip () {
-        return !this.userId
-      }
-    }
-  }
-}
+      skip() {
+        return !this.userId;
+      },
+    },
+  },
+};
 </script>
 <i18n>
 {

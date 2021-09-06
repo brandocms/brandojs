@@ -1,7 +1,5 @@
 <template>
-  <KForm
-    :back="{ name: 'users' }"
-    @save="save">
+  <KForm :back="{ name: 'users' }" @save="save">
     <section class="row">
       <div class="sized">
         <KInput
@@ -10,7 +8,8 @@
           :help-text="$t('user.name.help')"
           rules="required"
           placeholder="Navn Navnesen"
-          name="user[name]" />
+          name="user[name]"
+        />
 
         <KInputEmail
           v-model="user.email"
@@ -18,10 +17,12 @@
           :help-text="$t('user.email.help')"
           rules="required|email"
           placeholder="min@epost.no"
-          name="user[email]" />
+          name="user[email]"
+        />
 
         <div class="row">
           <KInputRadios
+            v-if="!myRoleIsLower"
             v-model="user.role"
             rules="required"
             :label="$t('user.role')"
@@ -31,17 +32,19 @@
               { name: $t('role.editor'), value: 'editor' },
               { name: $t('role.user'), value: 'user' },
             ]"
-            name="user[role]" />
+            name="user[role]"
+          />
 
           <KInputRadios
             v-model="user.language"
             rules="required"
             :options="[
               { name: 'English', value: 'en' },
-              { name: 'Norsk', value: 'no' }
+              { name: 'Norsk', value: 'no' },
             ]"
             name="user[language]"
-            :label="$t('user.language')" />
+            :label="$t('user.language')"
+          />
         </div>
 
         <KInputPassword
@@ -49,12 +52,14 @@
           :label="$t('user.password')"
           :placeholder="$t('user.password')"
           rules="min:6|confirmed:user[passwordConfirm]"
-          name="user[password]" />
+          name="user[password]"
+        />
         <KInputPassword
           v-model="user.passwordConfirm"
           :label="$t('user.passwordConfirm')"
           :placeholder="$t('user.passwordConfirm')"
-          name="user[passwordConfirm]" />
+          name="user[passwordConfirm]"
+        />
       </div>
       <div class="half">
         <KInputImage
@@ -62,17 +67,20 @@
           preview-key="xlarge"
           :label="$t('user.avatar')"
           :help-text="$t('user.avatar.help')"
-          name="user[avatar]" />
+          name="user[avatar]"
+        />
 
         <KInputToggle
           v-model="user.config.resetPasswordOnFirstLogin"
           name="user[config][resetPassword]"
-          :label="$t('user.mustResetPassword')" />
+          :label="$t('user.mustResetPassword')"
+        />
 
         <KInputToggle
           v-model="user.config.showMutationNotifications"
           name="user[config][showMutationNotifications]"
-          :label="$t('user.showMutationNotifications')" />
+          :label="$t('user.showMutationNotifications')"
+        />
       </div>
     </section>
   </KForm>
@@ -80,18 +88,39 @@
 
 <script>
 export default {
+  inject: ['GLOBALS'],
   props: {
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     save: {
       type: Function,
-      required: true
+      required: true,
+    },
+  },
+
+  computed: {
+    myRoleIsLower () {
+      if (this.GLOBALS.me.role === 'superuser') {
+        return
+      }
+
+      if (this.GLOBALS.me.role === 'admin') {
+        if (this.user.role === 'superuser') {
+          return true
+        }
+        if (this.user.role === 'admin') {
+          return true
+        }
+        return false
+      }
+
+      return true
     }
   }
-}
+};
 </script>
 <i18n>
 {

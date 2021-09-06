@@ -578,7 +578,7 @@ export default {
       @color fg peach;
       @color bg dark;
       border-radius: 12px;
-      padding: 5px 7px 5px;
+      padding: 5px 9px 5px;
     }
 
     .tooltip-arrow {

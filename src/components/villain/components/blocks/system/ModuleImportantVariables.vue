@@ -3,7 +3,9 @@
     <div
       v-for="(v, key) in value"
       :key="key">
-      <div class="field-wrapper">
+      <div
+        v-if="value[key].important"
+        class="field-wrapper">
         <template v-if="value[key].type === 'text'">
           <KInput
             v-model="value[key].value"

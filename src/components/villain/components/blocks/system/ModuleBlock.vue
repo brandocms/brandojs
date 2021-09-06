@@ -12,7 +12,9 @@
     <template #description>
       {{ getBlockName }}{{ block.data.multi ? ' — Multi' : '' }}
     </template>
-    <ModuleImportantVariables v-model="block.data.vars" />
+    <ModuleImportantVariables
+      v-if="!block.data.multi"
+      v-model="block.data.vars" />
     <div
       v-if="!block.data.multi"
       class="module-entry"
@@ -54,6 +56,8 @@
           :data-id="entry.id"
           class="module-entry"
           @click="handleClick">
+          <ModuleImportantVariables
+            v-model="entry.vars" />
           <component
             :is="buildWrapper(entry)"
             @delete="deleteBlock($event)"
@@ -181,6 +185,7 @@ export default {
 
     for (const [key, value] of Object.entries(this.block.data.vars)) {
       if (value.important) {
+        console.log('-- has important variables.')
         this.hasImportantVariables = true
         break
       }

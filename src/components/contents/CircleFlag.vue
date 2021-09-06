@@ -33,7 +33,8 @@
                 fill="#0052b4"
                 d="M133.6 0v222.7H0v66.7h133.6V512h66.7V289.4H512v-66.7H200.3V0z" /></g></svg>
     </template>
-    <template v-else-if="language === 'se'">
+    
+    <template v-else-if="language === 'sv'">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"><mask id="a"><circle

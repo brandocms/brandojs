@@ -119,6 +119,9 @@
                   <template v-else-if="entry.type === 'html'">
                     {{ entry.data.value }}
                   </template>
+                  <template v-else-if="entry.type === 'datetime'">
+                    {{ entry.data.value }}
+                  </template>
                   <template v-else-if="entry.type === 'color'">
                     <svg
                       style="display: inline-block; margin-right: 5px;"
@@ -161,6 +164,9 @@
                       }, {
                         id: 'text',
                         name: 'text',
+                      }, {
+                        id: 'datetime',
+                        name: 'Datetime',
                       },
                       {
                         id: 'color',
@@ -182,6 +188,12 @@
                   </template>
                   <template v-if="editEntry.type === 'html'">
                     <KInputRichText
+                      v-model="editEntry.data.value"
+                      compact
+                      :name="`prop[data][value]`" />
+                  </template>
+                  <template v-if="editEntry.type === 'datetime'">
+                    <KInputDatetime
                       v-model="editEntry.data.value"
                       compact
                       :name="`prop[data][value]`" />
@@ -224,6 +236,9 @@
                       }, {
                         id: 'text',
                         name: 'text',
+                      }, {
+                        id: 'datetime',
+                        name: 'Datetime',
                       },
                       {
                         id: 'color',
@@ -245,6 +260,12 @@
                   </template>
                   <template v-if="newEntry.type === 'html'">
                     <KInputRichText
+                      v-model="newEntry.data.value"
+                      compact
+                      :name="`prop[data][value]`" />
+                  </template>
+                  <template v-if="newEntry.type === 'datetime'">
+                    <KInputDatetime
                       v-model="newEntry.data.value"
                       compact
                       :name="`prop[data][value]`" />
@@ -277,6 +298,13 @@
               </template>
               <template v-if="global.type === 'html'">
                 <KInputRichText
+                  :key="global.key"
+                  v-model="global.data.value"
+                  :label="global.label"
+                  :name="`prop[${global.key}][value]`" />
+              </template>
+              <template v-if="global.type === 'datetime'">
+                <KInputDatetime
                   :key="global.key"
                   v-model="global.data.value"
                   :label="global.label"

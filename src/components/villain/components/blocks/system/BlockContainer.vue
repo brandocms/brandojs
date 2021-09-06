@@ -13,7 +13,8 @@
       <div
         v-for="(b, index) in innerValue"
         ref="containers"
-        :key="b.uid + '-container'"
+        :key="`${b.uid}-container`"
+        :data-uid="b.uid"
         :data-index="index"
         class="villain-block-container">
         <component

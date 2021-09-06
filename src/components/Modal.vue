@@ -211,9 +211,7 @@ export default {
     height: 100%;
     overflow-y: auto;
     outline: 0;
-  }
 
-  .modal {
     .card {
       position: relative;
       display: flex;

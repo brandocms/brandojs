@@ -10,6 +10,7 @@
         v-if="shouldStatus"
         class="status">
         <StatusLine
+          v-if="$parent.queryVars"
           :all="true"
           :deleted="isSoftDeletable"
           :val="$parent.queryVars.status"
@@ -18,21 +19,40 @@
       <div
         v-if="shouldFilter"
         class="filters">
-        <div
-          v-for="(v, k) in filters"
-          :key="k"
-          class="filter">
+        <template v-if="objectFilters">
           <div
-            class="filter-key"
-            @click="changeFilterKey(k)">
-            {{ k }}
+            v-for="f in filterKeys"
+            :key="f.key"
+            class="filter">
+            <div
+              class="filter-key"
+              @click="changeFilterKey(f.key)">
+              {{ f.label }}
+            </div>
+            <input
+              v-model="filters[f.key]"
+              :placeholder="$t('search')"
+              type="text"
+              @input="filterInput()" />
           </div>
-          <input
-            v-model="filters[k]"
-            :placeholder="$t('search')"
-            type="text"
-            @input="filterInput()" />
-        </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="(v, k) in filters"
+            :key="k"
+            class="filter">
+            <div
+              class="filter-key"
+              @click="changeFilterKey(k)">
+              {{ k }}
+            </div>
+            <input
+              v-model="filters[k]"
+              :placeholder="$t('search')"
+              type="text"
+              @input="filterInput()" />
+          </div>
+        </template>
       </div>
 
       <div
@@ -63,6 +83,20 @@
     <div class="list-header">
       <slot name="header"></slot>
     </div>
+    <div
+      v-if="paginationMeta && paginateTop"
+      class="pagination">
+      <div class="pagination-entries">
+        &rarr; {{ paginationMeta.totalEntries }} {{ $t('entries') }}
+      </div>
+      <button
+        v-for="p in pages"
+        :key="p.number"
+        :class="{ active: p.active }"
+        @click="changePage(p.number)">
+        {{ p.number }}
+      </button>
+    </div>
     <transition-group
       v-sortable="{
         group: level,
@@ -91,7 +125,7 @@
         :data-testidx="idx"
         :data-test-level="level"
         :data-id="entry[entryKey]"
-        :class="{ selected: isSelected(entry[entryKey]), deleted: entry['deletedAt'] }"
+        :class="{ ...rowClasses(entry), selected: isSelected(entry[entryKey]), deleted: entry['deletedAt'] }"
         class="list-row">
         <div
           class="main-content"
@@ -173,11 +207,6 @@ export default {
       default: true
     },
 
-    queryVars: {
-      type: Object,
-      default: () => {}
-    },
-
     tools: {
       type: Boolean,
       default: true
@@ -212,6 +241,11 @@ export default {
       default: true
     },
 
+    paginateTop: {
+      type: Boolean,
+      default: false
+    },
+
     /* if the sorting gets dragged between lists */
     sortParent: {
       type: String,
@@ -228,6 +262,11 @@ export default {
       default: 'id'
     },
 
+    rowClasses: {
+      type: Function,
+      default: () => {}
+    },
+
     sequenceHandle: {
       type: String,
       default: 'sequence-handle'
@@ -237,10 +276,12 @@ export default {
   data () {
     return {
       filters: {},
+      originalFilters: {},
       selectedRows: [],
       trashActive: false,
       sorting: false,
-      cachedRowForSelection: null
+      cachedRowForSelection: null,
+      objectFilters: false
     }
   },
 
@@ -257,7 +298,7 @@ export default {
     },
 
     shouldStatus () {
-      return this.$parent?.queryVars?.hasOwnProperty('status')
+      return this.status
     },
 
     hasMoreListener () {
@@ -287,6 +328,7 @@ export default {
             active: i === this.paginationMeta.currentPage
           })
         }
+        this.checkPagination()
         return ps
       }
       return []
@@ -295,11 +337,23 @@ export default {
 
   created () {
     if (this.filterKeys.length) {
-      this.filters[this.filterKeys[0]] = ''
+      if (typeof this.filterKeys[0] === 'object' && this.filterKeys[0] !== null) {
+        this.objectFilters = true
+        this.filters[this.filterKeys[0].key] = ''
+      } else {
+        this.filters[this.filterKeys[0]] = ''
+      }
     }
   },
 
   methods: {
+    checkPagination () {
+      if (this.paginationMeta.currentPage > this.paginationMeta.totalPages) {
+        const queryVars = { ...this.$parent.queryVars, offset: 0 }
+        this.$emit('updateQuery', queryVars)
+      }
+    },
+
     changePage (pageNumber) {
       const queryVars = { ...this.$parent.queryVars, offset: this.$parent.queryVars.limit * (pageNumber - 1) }
       this.$emit('updateQuery', queryVars)
@@ -335,7 +389,7 @@ export default {
       // clear out empty keys
       const filters = { ...this.filters }
       Object.keys(filters).forEach(key => (filters[key] === '') && delete filters[key])
-      const queryVars = { ...this.$parent.queryVars, filter: filters }
+      const queryVars = { ...this.$parent.queryVars, filter: filters, offset: 0 }
       this.$emit('updateQuery', queryVars)
     }, 750, true),
 
@@ -419,6 +473,7 @@ export default {
 <style lang="postcss">
   .pagination {
     margin-top: 25px;
+    max-width: 450px;
 
     .pagination-entries {
       font-size: 12px;
@@ -430,6 +485,8 @@ export default {
       width: 30px;
       height: 30px;
       border: 1px solid theme(colors.dark);
+      margin-right: 5px;
+      margin-bottom: 5px;
       border-radius: 50%;
       font-size: 13px;
       transition: background-color 200ms ease;
@@ -445,10 +502,6 @@ export default {
 
       &:hover {
         @color bg peach;
-      }
-
-      & + button {
-        margin-left: 5px;
       }
     }
   }
