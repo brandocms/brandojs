@@ -33,7 +33,7 @@
     "idle-js": "^1.2.0",
     "izitoast": "^1.4.0",
     "lodash": "^4.17.20",
-    "markdown-it": "^12.0.4",
+    "markdown-it": "^12.3.2",
     "morphdom": "^2.6.1",
     "nprogress": "^0.2.0",
     "phoenix": "^1.5.4",
