@@ -336,6 +336,9 @@ export default {
   },
 
   created () {
+    console.log('ContentList created.')
+    this.filters = { ...this.filters, ...this.$parent.queryVars.filter }
+    console.log(this.filters)
     if (this.filterKeys.length) {
       if (typeof this.filterKeys[0] === 'object' && this.filterKeys[0] !== null) {
         this.objectFilters = true
