@@ -51,7 +51,7 @@
     "vee-validate": "^3.3.9",
     "vex-dialog": "^1.1.0",
     "vex-js": "^4.1.0",
-    "vue": "^2.6.12",
+    "vue": "^3.0.0",
     "vue-apollo": "^3.0.7",
     "vue-codemirror": "^4.0.6",
     "vue-drag-drop": "^1.1.4",
